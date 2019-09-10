@@ -1,6 +1,6 @@
 package com.incentives.piggyback.notification.entity;
 
-public class PushNotification {
+public class PushNotificationPayload {
 
 	private String notificationID;
 	private String notificationTitle;
