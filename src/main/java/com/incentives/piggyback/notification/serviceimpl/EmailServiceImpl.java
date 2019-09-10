@@ -21,7 +21,7 @@ public class EmailServiceImpl {
 	private JavaMailSender javaMailSender;
 
 	@Async
-	public void processSendMailOperation(String from, String to, String subject, String bodyText) {
+	public void processSendMailOperation(String to, String subject, String bodyText) {
 		try {
 			MimeMessage msg = javaMailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(msg, true);
