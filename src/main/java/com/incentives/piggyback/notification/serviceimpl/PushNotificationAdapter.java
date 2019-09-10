@@ -1,4 +1,4 @@
-package com.incentives.piggyback.notification.serviceImpl;
+package com.incentives.piggyback.notification.serviceimpl;
 
 import java.util.List;
 
@@ -18,19 +18,18 @@ import com.incentives.piggyback.notification.utils.CommonUtility;
 @Component
 public class PushNotificationAdapter {
 	
-	private final static Logger logger = LoggerFactory.getLogger(PushNotificationAdapter.class);
+	private static final Logger logger = LoggerFactory.getLogger(PushNotificationAdapter.class);
 
 	@Autowired
 	protected Environment environment;
 
 	public void sendAndroidNotification(final List<String> recepients, final PushNotificationPayload payload) {
 		final String GOOGLE_SERVER_KEY = environment.getProperty("NOTIFICATION_GOOGLE_SERVER_KEY");
-//		final String GSM_ENDPOINT = environment.getProperty("NOTIFICATION_GSM_ENDPOINT");
 		if (CommonUtility.isValidList(recepients) && CommonUtility.isValidString(GOOGLE_SERVER_KEY)) {
 			try {
 				final String payLoadJson = new Gson().toJson(payload);
 				final Sender sender = new Sender(GOOGLE_SERVER_KEY.trim());
-				logger.debug("payLoadJson:: " + payLoadJson);
+				logger.debug("payLoadJson:: {} ", payLoadJson);
 				final Message message = new Message.Builder().timeToLive(30).delayWhileIdle(true).addData("data", payLoadJson).build();
 				final MulticastResult result = sender.send(message, recepients, 1);
 				logger.info("notifications sent result:: success count :: {} failure count :: {}", result.getSuccess(), result.getFailure());

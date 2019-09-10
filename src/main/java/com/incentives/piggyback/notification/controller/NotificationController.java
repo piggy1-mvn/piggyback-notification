@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,8 +14,8 @@ import com.incentives.piggyback.notification.entity.BroadcastRequest;
 import com.incentives.piggyback.notification.exception.PiggyException;
 import com.incentives.piggyback.notification.publisher.NotificationEventPublisher;
 import com.incentives.piggyback.notification.service.NotificationService;
-import com.incentives.piggyback.notification.util.constants.Constant;
 import com.incentives.piggyback.notification.utils.CommonUtility;
+import com.incentives.piggyback.notification.utils.Constant;
 import com.incentives.piggyback.notification.utils.RestResponse;
 import com.incentives.piggyback.notification.utils.RestUtils;
 
@@ -26,12 +25,11 @@ public class NotificationController {
 	
 	@Autowired
 	private NotificationService notificationService;
-	
 
     @Autowired
     private NotificationEventPublisher.PubsubOutboundGateway messagingGateway;
 
-	@RequestMapping(value = "/broadcast", method = RequestMethod.POST)
+    @PostMapping("/broadcast")
 	public ResponseEntity<RestResponse<String>> broadcastNotification(@RequestBody 
 			BroadcastRequest broadcastRequest) throws PiggyException {
 		return RestUtils.successResponse(notificationService.broadcastNotification(broadcastRequest));

@@ -21,13 +21,13 @@ public class PiggyException extends RuntimeException {
 		return responseCode;
 	}
 
-	public void setResponseCode(ExceptionResponseCode ResponseCode) {
-		if(ResponseCode != null) {
-			message = ResponseCode.getDescription();
+	public void setResponseCode(ExceptionResponseCode responseCode) {
+		if(responseCode != null) {
+			message = responseCode.getDescription();
 		}else {
 			message = DEFAULT_MESSAGE;
 		}
-		this.responseCode = ResponseCode;
+		this.responseCode = responseCode;
 	}
 
 	public HttpStatus getHttpStatus() {
@@ -38,6 +38,7 @@ public class PiggyException extends RuntimeException {
 		this.httpStatus = httpStatus;
 	}
 
+	@Override
 	public String getMessage() {
 		return message;
 	}
