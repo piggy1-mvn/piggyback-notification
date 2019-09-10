@@ -23,7 +23,7 @@ public class CommonUtility {
 	}
 
 	public static boolean isValidCollection(Collection<?> obj) {
-		return (obj != null && obj.size() > 0);
+		return (obj != null && !obj.isEmpty());
 	}
 
 	public static boolean isValidInteger(Integer value) {
@@ -43,14 +43,16 @@ public class CommonUtility {
 	}
 
 	public static boolean isValidList(List<?> list) {
-		return (list != null && list.size() != 0);
+		return (list != null && !list.isEmpty());
 	}
 
 	public static boolean isNotEmpty(String attrKey) {
 		return !attrKey.isEmpty();
 	}
 
-	public static String stringifyEventForPublish(String a, String b, String c, String d, String e) {
-		return a + "" + b + ";" + c + ";" + d + ";" + e;
-	}
+	public static String stringifyEventForPublish(String param1, String param2, String param3, String param4, String param5) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(param1).append(";").append(param2).append(";").append(param3).append(";").append(param4).append(";").append(param5);
+        return builder.toString();
+    }
 }

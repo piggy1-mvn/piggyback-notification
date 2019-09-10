@@ -1,4 +1,4 @@
-package com.incentives.piggyback.notification.serviceImpl;
+package com.incentives.piggyback.notification.serviceimpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.incentives.piggyback.notification.entity.BroadcastRequest;
 import com.incentives.piggyback.notification.entity.EmailRequest;
-import com.incentives.piggyback.notification.exception.PiggyException;
 import com.incentives.piggyback.notification.service.NotificationService;
 import com.incentives.piggyback.notification.utils.CommonUtility;
 
@@ -23,7 +22,7 @@ public class NotificationServiceImpl implements NotificationService {
 	private Environment environment;
 
 	@Override
-	public String broadcastNotification(BroadcastRequest broadcastRequest) throws PiggyException {
+	public String broadcastNotification(BroadcastRequest broadcastRequest) {
 		if (CommonUtility.isValidList(broadcastRequest.getEmailRequestList())) {
 			
 			for (EmailRequest emailRequest : broadcastRequest.getEmailRequestList()) {
