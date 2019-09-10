@@ -14,8 +14,8 @@ import com.incentives.piggyback.notification.entity.BroadcastRequest;
 import com.incentives.piggyback.notification.exception.PiggyException;
 import com.incentives.piggyback.notification.publisher.NotificationEventPublisher;
 import com.incentives.piggyback.notification.service.NotificationService;
-import com.incentives.piggyback.notification.util.constants.Constant;
 import com.incentives.piggyback.notification.utils.CommonUtility;
+import com.incentives.piggyback.notification.utils.Constant;
 import com.incentives.piggyback.notification.utils.RestResponse;
 import com.incentives.piggyback.notification.utils.RestUtils;
 
