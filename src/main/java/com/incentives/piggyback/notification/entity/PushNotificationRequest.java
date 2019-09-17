@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 public class PushNotificationRequest {
 
-	private PushNotificationHeader pushNotificationPayload;
+	private PushNotificationPayload pushNotificationPayload;
 	private List<String> recepients;
 }

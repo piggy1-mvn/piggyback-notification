@@ -57,6 +57,21 @@ public class NotificationServiceImpl implements NotificationService {
 		return "Broadcasted Successfully!";
 	}
 
+	@Override
+	public String emailInvoice(InvoiceRequest invoiceRequest) {
+		String htmlContent = setInvoiceBodyContent(invoiceRequest);
+		emailService.processSendMailOperation(invoiceRequest.getEmailId(),
+				invoiceRequest.getSubject(), htmlContent);
+		return null;
+	}
+
+	private String setInvoiceBodyContent(InvoiceRequest invoiceRequest) {
+		String htmlContent = environment.getProperty(Constant.Environment.EMAIL_HTML_INVOICE)
+				.replace(Constant.Email.VENDOR, invoiceRequest.getVendorDisplayName())
+				.replace(Constant.Email.AMOUNT, invoiceRequest.getTotalAmount());
+		return htmlContent;
+	}
+
 	private String setBodyContent(EmailRequest emailRequest) {
 		String htmlContent = environment.getProperty(Constant.Environment.EMAIL_HTML_CONTENT)
 				.replace(Constant.Email.COUPON_CODE, emailRequest.getCouponCode())
@@ -65,9 +80,5 @@ public class NotificationServiceImpl implements NotificationService {
 		return htmlContent;
 	}
 
-	@Override
-	public String emailInvoice(InvoiceRequest invoiceRequest) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 }
