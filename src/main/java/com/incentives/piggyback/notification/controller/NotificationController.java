@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.incentives.piggyback.notification.entity.BroadcastRequest;
+import com.incentives.piggyback.notification.entity.InvoiceRequest;
 import com.incentives.piggyback.notification.exception.PiggyException;
 import com.incentives.piggyback.notification.service.NotificationService;
 import com.incentives.piggyback.notification.utils.RestResponse;
@@ -25,5 +26,10 @@ public class NotificationController {
 			BroadcastRequest broadcastRequest) throws PiggyException {
 		return RestUtils.successResponse(notificationService.broadcastNotification(broadcastRequest));
 	}
-
+    
+    @PostMapping("/invoice")
+	public ResponseEntity<RestResponse<String>> emailInvoice(@RequestBody 
+			InvoiceRequest invoiceRequest) throws PiggyException {
+		return RestUtils.successResponse(notificationService.emailInvoice(invoiceRequest));
+	}
 }

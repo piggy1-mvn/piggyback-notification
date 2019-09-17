@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.incentives.piggyback.notification.entity.BroadcastRequest;
 import com.incentives.piggyback.notification.entity.EmailRequest;
+import com.incentives.piggyback.notification.entity.InvoiceRequest;
 import com.incentives.piggyback.notification.publisher.NotificationEventPublisher;
 import com.incentives.piggyback.notification.service.NotificationService;
 import com.incentives.piggyback.notification.utils.CommonUtility;
@@ -56,6 +57,21 @@ public class NotificationServiceImpl implements NotificationService {
 		return "Broadcasted Successfully!";
 	}
 
+	@Override
+	public String emailInvoice(InvoiceRequest invoiceRequest) {
+		String htmlContent = setInvoiceBodyContent(invoiceRequest);
+		emailService.processSendMailOperation(invoiceRequest.getEmailId(),
+				invoiceRequest.getSubject(), htmlContent);
+		return null;
+	}
+
+	private String setInvoiceBodyContent(InvoiceRequest invoiceRequest) {
+		String htmlContent = environment.getProperty(Constant.Environment.EMAIL_HTML_INVOICE)
+				.replace(Constant.Email.VENDOR, invoiceRequest.getVendorDisplayName())
+				.replace(Constant.Email.AMOUNT, invoiceRequest.getTotalAmount());
+		return htmlContent;
+	}
+
 	private String setBodyContent(EmailRequest emailRequest) {
 		String htmlContent = environment.getProperty(Constant.Environment.EMAIL_HTML_CONTENT)
 				.replace(Constant.Email.COUPON_CODE, emailRequest.getCouponCode())
@@ -63,4 +79,6 @@ public class NotificationServiceImpl implements NotificationService {
 				.replace(Constant.Email.LINK, emailRequest.getRedirectUrl());
 		return htmlContent;
 	}
+
+
 }
