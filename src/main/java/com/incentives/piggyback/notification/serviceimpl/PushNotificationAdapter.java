@@ -1,43 +1,76 @@
 package com.incentives.piggyback.notification.serviceimpl;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import com.google.android.gcm.server.Message;
-import com.google.android.gcm.server.MulticastResult;
-import com.google.android.gcm.server.Sender;
 import com.google.gson.Gson;
+import com.incentives.piggyback.notification.entity.NotificationRequestModel;
+import com.incentives.piggyback.notification.entity.PushNotificationHeader;
 import com.incentives.piggyback.notification.entity.PushNotificationPayload;
+import com.incentives.piggyback.notification.exception.ExceptionResponseCode;
+import com.incentives.piggyback.notification.exception.PiggyException;
 import com.incentives.piggyback.notification.utils.CommonUtility;
 
 @Component
 public class PushNotificationAdapter {
-	
-	private static final Logger logger = LoggerFactory.getLogger(PushNotificationAdapter.class);
 
 	@Autowired
 	protected Environment environment;
 
+	private static final Logger log = LoggerFactory.getLogger(PushNotificationAdapter.class);
+
+
+	Gson gson = new Gson();
+
 	public void sendAndroidNotification(final List<String> recepients, final PushNotificationPayload payload) {
-		final String GOOGLE_SERVER_KEY = environment.getProperty("NOTIFICATION_GOOGLE_SERVER_KEY");
-		if (CommonUtility.isValidList(recepients) && CommonUtility.isValidString(GOOGLE_SERVER_KEY)) {
+
+		final String FCM_SERVER_KEY = environment.getProperty("notification.fcm.server.key");
+		final String FCM_SERVER_URL = environment.getProperty("notification.fcm.server.url");
+		if (!(CommonUtility.isValidList(recepients) && CommonUtility.isValidString(FCM_SERVER_KEY)))
+			throw new PiggyException(ExceptionResponseCode.USER_DATA_NOT_FOUND_IN_REQUEST);
+
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		HttpPost postRequest = new HttpPost(FCM_SERVER_URL);
+		NotificationRequestModel notificationRequestModel = new NotificationRequestModel();
+		PushNotificationHeader notificationData = new PushNotificationHeader();
+		notificationData.setBody(payload.getBody());
+		notificationData.setTitle(payload.getTitle());
+		notificationRequestModel.setNotification(notificationData);
+		notificationRequestModel.setData(payload);
+		recepients.forEach(recepient -> {
 			try {
-				final String payLoadJson = new Gson().toJson(payload);
-				final Sender sender = new Sender(GOOGLE_SERVER_KEY.trim());
-				logger.debug("payLoadJson:: {} ", payLoadJson);
-				final Message message = new Message.Builder().timeToLive(30).delayWhileIdle(true).addData("data", payLoadJson).build();
-				final MulticastResult result = sender.send(message, recepients, 1);
-				logger.info("notifications sent result:: success count :: {} failure count :: {}", result.getSuccess(), result.getFailure());
-			} catch (Exception ioException) {
-				logger.error("some exception occured while sending notifications ", ioException);
+				notificationRequestModel.setTo(recepient);
+				String json = gson.toJson(notificationRequestModel);
+				StringEntity input = new StringEntity(json);
+				input.setContentType("application/json");
+				postRequest.addHeader("Authorization", "key="+FCM_SERVER_KEY);
+				postRequest.setEntity(input);
+				HttpResponse response = httpClient.execute(postRequest);
+				if (response.getStatusLine().getStatusCode() != 200) {
+					log.error("push notification sending failed to {} with status {}",recepient, response.getStatusLine().getStatusCode());
+				}
+			} catch (Exception e) {
+				log.error("push notification sending failed to {} with error {}",recepient, e);
 			}
-		} else {
-			logger.warn("No recepients for notification");
+
+		});
+		try {
+			httpClient.close();
+		} catch (IOException e) {
+			log.error("httpClient connection close failure with error {}", e);
 		}
 	}
+
+
 }

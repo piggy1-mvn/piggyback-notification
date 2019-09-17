@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.incentives.piggyback.notification.entity.BroadcastRequest;
+import com.incentives.piggyback.notification.entity.InvoiceRequest;
 import com.incentives.piggyback.notification.exception.PiggyException;
 import com.incentives.piggyback.notification.service.NotificationService;
 import com.incentives.piggyback.notification.utils.RestResponse;
@@ -60,5 +61,11 @@ public class NotificationController {
 
 		return ResponseEntity.status(con.getResponseCode()).build();
 	}
-
+    
+  @PostMapping("/invoice")
+	public ResponseEntity<RestResponse<String>> emailInvoice(@RequestBody 
+			InvoiceRequest invoiceRequest) throws PiggyException {
+		return RestUtils.successResponse(notificationService.emailInvoice(invoiceRequest));
+	}
+ 
 }
