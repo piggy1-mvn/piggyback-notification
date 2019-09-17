@@ -14,6 +14,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.incentives.piggyback.notification.utils.CommonUtility;
 import com.incentives.piggyback.notification.utils.RestUtils;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
@@ -36,10 +39,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				ExceptionResponseCode.GENRAL_ERROR : ex.getResponseCode()), HttpStatus.OK,ex.getMessage());
 	}
 
+	@ExceptionHandler(value = {IOException.class})
+	protected ResponseEntity<?> handleMalformedURLException(IOException ex) {
+		log.error(ex.getMessage(), ex);
+		return RestUtils.errorResponseEntity(ExceptionResponseCode.GENRAL_ERROR.getDescription(),
+				PiggyException.DEFAULT_HTTP_STATUS);
+	}
+
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		return new ResponseEntity<>(ExceptionResponseCode.GENRAL_ERROR.getDescription(), HttpStatus.BAD_REQUEST);
 	}
-
 }
