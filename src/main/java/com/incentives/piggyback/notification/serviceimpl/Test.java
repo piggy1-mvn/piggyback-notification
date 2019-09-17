@@ -16,7 +16,6 @@ import com.incentives.piggyback.notification.entity.PushNotificationPayload;
 
 public class Test {
 
-
 	public static void main(String[] args) throws ClientProtocolException, IOException {
 		NotificationRequestModel notificationRequestModel = new NotificationRequestModel();
 		PushNotificationHeader notificationData = new PushNotificationHeader();

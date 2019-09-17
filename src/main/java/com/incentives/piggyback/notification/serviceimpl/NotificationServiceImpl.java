@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.incentives.piggyback.notification.entity.BroadcastRequest;
 import com.incentives.piggyback.notification.entity.EmailRequest;
+import com.incentives.piggyback.notification.entity.InvoiceRequest;
 import com.incentives.piggyback.notification.publisher.NotificationEventPublisher;
 import com.incentives.piggyback.notification.service.NotificationService;
 import com.incentives.piggyback.notification.utils.CommonUtility;
@@ -62,5 +63,11 @@ public class NotificationServiceImpl implements NotificationService {
 				.replace(Constant.Email.VENDOR, emailRequest.getVendorDisplayName())
 				.replace(Constant.Email.LINK, emailRequest.getRedirectUrl());
 		return htmlContent;
+	}
+
+	@Override
+	public String emailInvoice(InvoiceRequest invoiceRequest) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
