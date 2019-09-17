@@ -12,9 +12,8 @@ import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Sender;
 import com.google.gson.Gson;
-import com.incentives.piggyback.notification.entity.PushNotificationPayload;
+import com.incentives.piggyback.notification.entity.PushNotificationHeader;
 import com.incentives.piggyback.notification.utils.CommonUtility;
-
 @Component
 public class PushNotificationAdapter {
 	
@@ -23,7 +22,7 @@ public class PushNotificationAdapter {
 	@Autowired
 	protected Environment environment;
 
-	public void sendAndroidNotification(final List<String> recepients, final PushNotificationPayload payload) {
+	public void sendAndroidNotification(final List<String> recepients, final PushNotificationHeader payload) {
 		final String GOOGLE_SERVER_KEY = environment.getProperty("NOTIFICATION_GOOGLE_SERVER_KEY");
 		if (CommonUtility.isValidList(recepients) && CommonUtility.isValidString(GOOGLE_SERVER_KEY)) {
 			try {
@@ -40,4 +39,6 @@ public class PushNotificationAdapter {
 			logger.warn("No recepients for notification");
 		}
 	}
+	
+	
 }

@@ -25,5 +25,4 @@ public class NotificationController {
 			BroadcastRequest broadcastRequest) throws PiggyException {
 		return RestUtils.successResponse(notificationService.broadcastNotification(broadcastRequest));
 	}
-
 }
