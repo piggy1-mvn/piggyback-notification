@@ -1,33 +1,38 @@
-language:
-  java
+language: java
 
-sudo:
-  false
+sudo: false
 
 cache:
   directories:
-    - $HOME/.m2
-    - $HOME/.sonar/cache
+  - "$HOME/.m2"
+  - "$HOME/.sonar/cache"
 
 services:
-  - docker
+- docker
 
-install:
-  skip
+before_install:
+  - openssl aes-256-cbc -k "$DECRYPT_KEY" -in secret-storage.json.enc -out secret-storage.json -d -md sha256
+
+install: skip
 
 addons:
   sonarcloud:
-    organization: "piggyback"
+    organization: piggyback
 
 script:
-  - mvn clean verify sonar:sonar -Dsonar.projectKey=piggy1-mvn_piggyback-notification
-  - docker build -t piggy1/notification .
-
-deploy:
-  provider: script
-  script: bash docker_push
-  on:
-    branch: master
+- mvn clean verify sonar:sonar -Dsonar.projectKey=piggy1-mvn_piggyback-notification
+- docker build -t piggy1/notification .
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+- docker push piggy1/notification
+- mvn -Pprod clean verify
+- docker build -t notification-prod .
+- if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_EVENT_TYPE == "push" ]; then docker tag notification-prod gcr.io/absolute-text-251105/piggy1-notification:v1; fi
+- if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_EVENT_TYPE == "push" ]; then cat secret-storage.json | docker login -u _json_key --password-stdin https://gcr.io; fi
+- if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_EVENT_TYPE == "push" ]; then docker push gcr.io/absolute-text-251105/piggy1-notification:v1; fi
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)
+
+env:
+  global:
+    secure: QHhqNOnWhUmj377acjHvOlXtbJU2EgoZOFQz26zAeIhSi4OcgakorDIxXmVW7QVQBWTk19Uevx6ImnAIXQ/XIR1aneMPHeUNTapONbz5j+9FoZ1RCwxR5z+ZuwQ+yM74nbVh0x8hWPxzr6g+D1wod1MQBfIzx9bmPqjKusNt5+PehRRilsKEacCQlsRoU0LsnkUS4hveGFBVh7HQfUjHXYBHHb93Gm2OeK5mUpaUBj6dko5nSLpCmXO8tmILuh3q6UTidpEiUULV3HpLCusc7vowgWNxrC9gCibGJNGd6IcthmvX9WqflBgsVI1qi16wLSPz7dH76SqKTXxMGCygXKXZNUFwkxdZkO7b3VX7/FqOK+KO6/PP97PtjL7Nn8q82lBQwLyQ0CqhmOz9Dd3f/5MoGc+u66zWAmHSwgMvcHSRc+DVHu9iX+aXBujech2ubRg2xMHMTC98ZzslnOF9po2LhSteaXoNI6tVy76BH1i/hGKoBD6L/ZDRieOgcaUfQH3jv4xj8v/XtHzfqWLxOHabyOPlnWSs1VTXNc0E2C0HV5jz9UwNprNmRQNYFmgn9FZl/poQwWU70goJ8Y2NsCsF7ra9TWNwpAP/XgD8Ju8LeIRK23K1RkH/3Ed/EjaywFR9i1CH6jWS1pVovGE9GNVkAxZBGhie/TB4cRe1U+8=
