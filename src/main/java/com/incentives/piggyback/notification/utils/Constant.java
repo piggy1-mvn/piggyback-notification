@@ -14,10 +14,12 @@ public interface Constant {
     	String COUPON_CODE = "{COUPON_CODE}";
     	String VENDOR = "{vendor}";
     	String LINK = "{unique_link}";
+    	String AMOUNT = "{amount}";
     }
     
     public interface Environment {
     	String EMAIL_HTML_CONTENT = "html.coupon.email";
+    	String EMAIL_HTML_INVOICE = "html.invoice.email";
     }
     
 }
