@@ -28,8 +28,8 @@ public class NotificationController {
     }
 
     @PostMapping("/webhook")
-    public ResponseEntity<String> webhookNotification(@RequestBody OfferEntity offer, @RequestParam(name = "webhookurl") String url) throws IOException {
-        return ResponseEntity.status(notificationService.webhookNotification(offer, url)).build();
+    public ResponseEntity<RestResponse<Integer>> webhookNotification(@RequestBody OfferEntity offer, @RequestParam(name = "webhookurl") String url) throws IOException {
+        return RestUtils.successResponse(notificationService.webhookNotification(offer, url));
     }
 
     @PostMapping("/invoice")
