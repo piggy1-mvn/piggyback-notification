@@ -4,7 +4,7 @@ public interface Constant {
 	
 	Integer SUCCESS_STATUS = 200;
 	Integer FAILURE_STATUS = 101;
-    String NOTIFICATION_PUBLISHER_TOPIC = "notificationEvents";
+    String NOTIFICATION_PUBLISHER_TOPIC = "notification.publish.topic";
     String NOTIFICATION_SOURCE_ID = "4";
     String NOTIFICATION_CREATED_EVENT = "Notification Events Created";
     String NOTIFICATION_UPDATED_EVENT = "Notification Events Updated";
@@ -21,5 +21,4 @@ public interface Constant {
     	String EMAIL_HTML_CONTENT = "html.coupon.email";
     	String EMAIL_HTML_INVOICE = "html.invoice.email";
     }
-    
 }

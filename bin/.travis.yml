@@ -1,0 +1,41 @@
+language: java
+
+sudo: false
+
+cache:
+  directories:
+  - "$HOME/.m2"
+  - "$HOME/.sonar/cache"
+  - "$HOME/google-cloud-sdk"
+
+services:
+- docker
+
+before_install:
+- openssl aes-256-cbc -k "$DECRYPT_KEY" -in secret-storage.json.enc -out secret-storage.json -d -md sha256
+- openssl aes-256-cbc -k "$DECRYPT_KEY" -in kub-deploy.json.enc -out kub-deploy.json -d -md sha256
+
+install: skip
+
+addons:
+  sonarcloud:
+    organization: piggyback
+
+script:
+- if [ $TRAVIS_BRANCH != "master" ]; then mvn clean verify sonar:sonar -Dsonar.projectKey=piggy1-mvn_piggyback-notification; fi
+- if [ $TRAVIS_BRANCH != "master" ]; then docker build -t piggy1/notification .; fi
+- if [ $TRAVIS_BRANCH != "master" ]; then echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin; fi
+- if [ $TRAVIS_BRANCH != "master" ]; then docker push piggy1/notification; fi
+- if [ $TRAVIS_BRANCH == "develop" ] && [ $TRAVIS_EVENT_TYPE == "push" ]; then mvn -Pprod clean verify; fi
+- if [ $TRAVIS_BRANCH == "develop" ] && [ $TRAVIS_EVENT_TYPE == "push" ]; then cat secret-storage.json | docker login -u _json_key --password-stdin https://gcr.io; fi
+- if [ $TRAVIS_BRANCH == "develop" ] && [ $TRAVIS_EVENT_TYPE == "push" ]; then chmod 777 deploy_shell_canary.sh; fi
+- if [ $TRAVIS_BRANCH == "develop" ] && [ $TRAVIS_EVENT_TYPE == "push" ]; then ./deploy_shell_canary.sh; fi
+- if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_EVENT_TYPE == "push" ]; then chmod 777 deploy_shell_prod.sh; fi
+- if [ $TRAVIS_BRANCH == "master" ] && [ $TRAVIS_EVENT_TYPE == "push" ]; then ./deploy_shell_prod.sh; fi
+
+after_success:
+- bash <(curl -s https://codecov.io/bash)
+
+env:
+  global:
+  - CLOUDSDK_CORE_DISABLE_PROMPTS=1
