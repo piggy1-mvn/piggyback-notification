@@ -1,4 +1,6 @@
 .idea/
 target/
 user.iml
+.classpath
+.project
 .settings/

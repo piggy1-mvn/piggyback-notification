@@ -17,7 +17,7 @@ spec:
         secret:
           secretName: pubsub-key
       containers:
-      - image: gcr.io/absolute-text-251105/piggy1-notification:v5
+      - image: gcr.io/absolute-text-251105/piggy1-notification:v6
         name: piggyback-prod-runner-notification
         volumeMounts:
         - name: google-cloud-key
