@@ -53,7 +53,7 @@ public class NotificationTest {
 	}
 
 	@Test
-	public final void TestGetAllUser() throws Exception {
+	public final void broadcastContent() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 		BroadcastRequest broadcastRequest = new BroadcastRequest();
