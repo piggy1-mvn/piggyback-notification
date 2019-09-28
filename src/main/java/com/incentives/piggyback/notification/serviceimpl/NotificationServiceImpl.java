@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -84,8 +86,9 @@ public class NotificationServiceImpl implements NotificationService {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 		HttpEntity<?> entity = new HttpEntity<>(offer, headers);
-		restTemplate.postForLocation(url, entity);
-		return 200;
+		ResponseEntity<OfferEntity> response = restTemplate.exchange
+				(url, HttpMethod.POST, entity, OfferEntity.class);
+		return response.getStatusCodeValue();
 	}
 
 
