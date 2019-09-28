@@ -77,7 +77,7 @@ public class NotificationServiceImpl implements NotificationService {
 		String htmlContent = setInvoiceBodyContent(invoiceRequest);
 		emailService.processSendMailOperation(invoiceRequest.getEmailId(),
 				invoiceRequest.getSubject(), htmlContent);
-		return null;
+		return "Invoice e-mailed Successfully!";
 	}
 
 	@Override
