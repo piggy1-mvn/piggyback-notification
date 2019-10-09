@@ -38,4 +38,5 @@ public class NotificationController {
         return RestUtils.successResponse(notificationService.emailInvoice(invoiceRequest));
     }
 
+
 }
