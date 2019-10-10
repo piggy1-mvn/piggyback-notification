@@ -29,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 
 @Component
 public class PushNotificationAdapter {
@@ -105,22 +106,24 @@ public class PushNotificationAdapter {
 	}
 
 	private static byte[] encryptAESkey(String data, String publicKey) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
-		String encodedPublicKey = Base64.getEncoder().encodeToString(publicKey.getBytes());
+		//String encodedPublicKey = Base64.getEncoder().encodeToString(publicKey.getBytes());
 		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-		cipher.init(Cipher.ENCRYPT_MODE, getRSAPublicKey(encodedPublicKey));
+		cipher.init(Cipher.ENCRYPT_MODE, getRSAPublicKey(publicKey));
 		return cipher.doFinal(data.getBytes());
 	}
 
 	private static PublicKey getRSAPublicKey(String base64PublicKey){
 		PublicKey publicKey = null;
 		try{
-			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(base64PublicKey.getBytes()));
+			byte[] derPublicKey = DatatypeConverter.parseHexBinary(base64PublicKey);
+			X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(derPublicKey);
 			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-			publicKey = keyFactory.generatePublic(keySpec);
-			return publicKey;
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
+			return keyFactory.generatePublic(publicKeySpec);
+//			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(base64PublicKey.getBytes()));
+//			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+//			publicKey = keyFactory.generatePublic(keySpec);
+//			return publicKey;
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 			e.printStackTrace();
 		}
 		return publicKey;
