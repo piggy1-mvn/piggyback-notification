@@ -105,11 +105,13 @@ public class PushNotificationAdapter {
 		}catch(NoSuchAlgorithmException e){
 			log.debug("Secret key generation failed");
 		}
+		log.debug("Secret key generation is" + secretKey.getEncoded().toString());
 		return secretKey;
 	}
 
 	private byte[] encryptAESkey(String data, String publicKey) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-		Cipher cipher = Cipher.getInstance("RSA/NONE/PKCS1Padding");
+		//Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+		Cipher cipher = Cipher.getInstance("RSA");
 		cipher.init(Cipher.ENCRYPT_MODE, getRSAPublicKey(publicKey));
 		byte[] cipherText = cipher.doFinal(data.getBytes());
 		log.info("AES encypted key is " + cipherText.toString());
