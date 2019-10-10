@@ -109,18 +109,20 @@ public class PushNotificationAdapter {
 	}
 
 	private byte[] encryptAESkey(String data, String publicKey) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+		Cipher cipher = Cipher.getInstance("RSA/NONE/PKCS1Padding");
 		cipher.init(Cipher.ENCRYPT_MODE, getRSAPublicKey(publicKey));
-		return cipher.doFinal(data.getBytes());
+		byte[] cipherText = cipher.doFinal(data.getBytes());
+		log.info("AES encypted key is " + cipherText.toString());
+		return cipherText;
 	}
 
 	private static String getAesEncryptData(String plainText, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 		byte[] plaintext = plainText.getBytes();
-		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS1Padding");
 		SecretKeySpec keySpec = new SecretKeySpec(secretKey.getEncoded(), "AES");
 		cipher.init(Cipher.ENCRYPT_MODE, keySpec);
 		byte[] cipherText = cipher.doFinal(plaintext);
-
+		log.info("Encrypted Voucher code is "+ cipherText.toString() );
 		return cipherText.toString();
 	}
 
