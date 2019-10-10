@@ -7,9 +7,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.List;
 
-import com.google.android.gcm.server.InvalidRequestException;
 import com.incentives.piggyback.notification.entity.*;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -25,7 +23,6 @@ import com.google.gson.Gson;
 import com.incentives.piggyback.notification.exception.ExceptionResponseCode;
 import com.incentives.piggyback.notification.exception.PiggyException;
 import com.incentives.piggyback.notification.utils.CommonUtility;
-import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
@@ -139,9 +136,4 @@ public class PushNotificationAdapter {
 
 		return cipherText.toString();
 	}
-
-
-
-
-
 }
