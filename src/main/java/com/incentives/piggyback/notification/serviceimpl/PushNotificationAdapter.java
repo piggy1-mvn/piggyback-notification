@@ -67,7 +67,7 @@ public class PushNotificationAdapter {
 
 			try {
 				pushNotificationNewPayload.setVoucher_code(getAesEncryptData(payload.getVoucher_code(), keyGenerator()));
-				pushNotificationNewPayload.setKey(encryptAESkey(keyGenerator().toString(),recepient.getUser_rsa()).toString());
+				pushNotificationNewPayload.setKey(Base64.getEncoder().encodeToString(encryptAESkey(keyGenerator().toString(),recepient.getUser_rsa())));
 			} catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | IOException | InvalidKeySpecException e) {
 				throw new PiggyException("Error while encryption of voucher code" + e);
 			}
@@ -114,24 +114,6 @@ public class PushNotificationAdapter {
 		cipher.init(Cipher.ENCRYPT_MODE, getRSAPublicKey(publicKey));
 		return cipher.doFinal(data.getBytes());
 	}
-//
-//	private static PublicKey getRSAPublicKey(String str_key){
-//		PublicKey publicKey = null;
-//		try{
-////			byte[] derPublicKey = DatatypeConverter.parseHexBinary(base64PublicKey);
-////			X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(derPublicKey);
-////			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-////			return keyFactory.generatePublic(publicKeySpec);
-//            byte[] byte_pubkey = Base64.getDecoder().decode(str_key);
-//			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(byte_pubkey);
-//			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-//			publicKey = keyFactory.generatePublic(keySpec);
-//			return publicKey;
-//		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-//			e.printStackTrace();
-//		}
-//		return publicKey;
-//	}
 
 	private static String getAesEncryptData(String plainText, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 		byte[] plaintext = plainText.getBytes();

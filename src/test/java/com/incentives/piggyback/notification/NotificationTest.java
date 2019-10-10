@@ -2,6 +2,7 @@ package com.incentives.piggyback.notification;
 
 import static org.junit.Assert.assertEquals;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,9 @@ import com.incentives.piggyback.notification.entity.EmailRequest;
 import com.incentives.piggyback.notification.entity.InvoiceRequest;
 import com.incentives.piggyback.notification.publisher.NotificationEventPublisher;
 import com.incentives.piggyback.notification.service.NotificationService;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
@@ -94,5 +98,4 @@ public class NotificationTest {
 		MockHttpServletResponse response = result.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
-
 }
