@@ -98,4 +98,5 @@ public class NotificationTest {
 		MockHttpServletResponse response = result.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
+
 }

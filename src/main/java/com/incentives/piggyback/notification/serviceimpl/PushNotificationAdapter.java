@@ -67,7 +67,7 @@ public class PushNotificationAdapter {
 
 			try {
 				pushNotificationNewPayload.setVoucher_code(getAesEncryptData(payload.getVoucher_code(), keyGenerator()));
-				pushNotificationNewPayload.setKey(Base64.getEncoder().encodeToString(encryptAESkey(keyGenerator().toString(),recepient.getUser_rsa())));
+				pushNotificationNewPayload.setKey(Base64.getEncoder().encodeToString(encryptAESkey(keyGenerator().getEncoded().toString(),recepient.getUser_rsa())));
 			} catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | IOException | InvalidKeySpecException e) {
 				throw new PiggyException("Error while encryption of voucher code" + e);
 			}
@@ -109,7 +109,6 @@ public class PushNotificationAdapter {
 	}
 
 	private byte[] encryptAESkey(String data, String publicKey) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-		//String encodedPublicKey = Base64.getEncoder().encodeToString(publicKey.getBytes());
 		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 		cipher.init(Cipher.ENCRYPT_MODE, getRSAPublicKey(publicKey));
 		return cipher.doFinal(data.getBytes());
@@ -119,7 +118,6 @@ public class PushNotificationAdapter {
 		byte[] plaintext = plainText.getBytes();
 		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		SecretKeySpec keySpec = new SecretKeySpec(secretKey.getEncoded(), "AES");
-		//IvParameterSpec ivSpec = new IvParameterSpec(IV);
 		cipher.init(Cipher.ENCRYPT_MODE, keySpec);
 		byte[] cipherText = cipher.doFinal(plaintext);
 
