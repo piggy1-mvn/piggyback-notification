@@ -105,8 +105,9 @@ public class PushNotificationAdapter {
 	}
 
 	private static byte[] encryptAESkey(String data, String publicKey) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
+		String encodedPublicKey = Base64.getEncoder().encodeToString(publicKey.getBytes());
 		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-		cipher.init(Cipher.ENCRYPT_MODE, getRSAPublicKey(publicKey));
+		cipher.init(Cipher.ENCRYPT_MODE, getRSAPublicKey(encodedPublicKey));
 		return cipher.doFinal(data.getBytes());
 	}
 
