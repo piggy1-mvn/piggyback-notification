@@ -17,6 +17,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.openssl.PEMParser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,24 +114,24 @@ public class PushNotificationAdapter {
 		cipher.init(Cipher.ENCRYPT_MODE, getRSAPublicKey(publicKey));
 		return cipher.doFinal(data.getBytes());
 	}
-
-	private static PublicKey getRSAPublicKey(String str_key){
-		PublicKey publicKey = null;
-		try{
-//			byte[] derPublicKey = DatatypeConverter.parseHexBinary(base64PublicKey);
-//			X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(derPublicKey);
+//
+//	private static PublicKey getRSAPublicKey(String str_key){
+//		PublicKey publicKey = null;
+//		try{
+////			byte[] derPublicKey = DatatypeConverter.parseHexBinary(base64PublicKey);
+////			X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(derPublicKey);
+////			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+////			return keyFactory.generatePublic(publicKeySpec);
+//            byte[] byte_pubkey = Base64.getDecoder().decode(str_key);
+//			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(byte_pubkey);
 //			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-//			return keyFactory.generatePublic(publicKeySpec);
-            byte[] byte_pubkey = Base64.getDecoder().decode(str_key);
-			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(byte_pubkey);
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-			publicKey = keyFactory.generatePublic(keySpec);
-			return publicKey;
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-			e.printStackTrace();
-		}
-		return publicKey;
-	}
+//			publicKey = keyFactory.generatePublic(keySpec);
+//			return publicKey;
+//		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+//			e.printStackTrace();
+//		}
+//		return publicKey;
+//	}
 
 	private static String getAesEncryptData(String plainText, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 		byte[] plaintext = plainText.getBytes();
@@ -142,20 +144,20 @@ public class PushNotificationAdapter {
 		return cipherText.toString();
 	}
 
-//    private PublicKey getRSAPublicKey(String publicKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-//        Reader keyReader = null;
-//        try {
-//            keyReader = new StringReader(publicKey);
-//            PEMParser pemParser = new PEMParser(keyReader);
-//            SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) pemParser.readObject();
-//            X509EncodedKeySpec spec = new X509EncodedKeySpec(subjectPublicKeyInfo.getEncoded());
-//            return KeyFactory.getInstance("RSA").generatePublic(spec);
-//        } finally {
-//            if (keyReader != null) {
-//                keyReader.close();
-//            }
-//        }
-//    }
+    private PublicKey getRSAPublicKey(String publicKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        Reader keyReader = null;
+        try {
+            keyReader = new StringReader(publicKey);
+            PEMParser pemParser = new PEMParser(keyReader);
+            SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) pemParser.readObject();
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(subjectPublicKeyInfo.getEncoded());
+            return KeyFactory.getInstance("RSA").generatePublic(spec);
+        } finally {
+            if (keyReader != null) {
+                keyReader.close();
+            }
+        }
+    }
 
 
 
