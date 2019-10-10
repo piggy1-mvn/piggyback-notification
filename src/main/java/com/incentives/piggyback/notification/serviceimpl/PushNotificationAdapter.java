@@ -42,6 +42,7 @@ public class PushNotificationAdapter {
 
 	private static final Logger log = LoggerFactory.getLogger(PushNotificationAdapter.class);
 
+	SecretKey key = keyGenerator();
 
 	Gson gson = new Gson();
 
@@ -66,8 +67,8 @@ public class PushNotificationAdapter {
 			pushNotificationNewPayload.setTitle(payload.getTitle());
 
 			try {
-				pushNotificationNewPayload.setVoucher_code(getAesEncryptData(payload.getVoucher_code(), keyGenerator()));
-				pushNotificationNewPayload.setKey(Base64.getEncoder().encodeToString(encryptAESkey(keyGenerator().getEncoded().toString(),recepient.getUser_rsa())));
+				pushNotificationNewPayload.setVoucher_code(getAesEncryptData(payload.getVoucher_code(), key));
+				pushNotificationNewPayload.setKey(Base64.getEncoder().encodeToString(encryptAESkey(key.getEncoded().toString(),recepient.getUser_rsa())));
 			} catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | IOException | InvalidKeySpecException e) {
 				throw new PiggyException("Error while encryption of voucher code" + e);
 			}
