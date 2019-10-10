@@ -118,7 +118,7 @@ public class PushNotificationAdapter {
 
 	private static String getAesEncryptData(String plainText, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 		byte[] plaintext = plainText.getBytes();
-		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS1Padding");
+		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
 		SecretKeySpec keySpec = new SecretKeySpec(secretKey.getEncoded(), "AES");
 		cipher.init(Cipher.ENCRYPT_MODE, keySpec);
 		byte[] cipherText = cipher.doFinal(plaintext);
