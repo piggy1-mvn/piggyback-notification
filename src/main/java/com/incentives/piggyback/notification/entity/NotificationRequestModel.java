@@ -8,5 +8,5 @@ public class NotificationRequestModel {
     private PushNotificationHeader notification;
     private String to;
     private String priority = "high";
-    private PushNotificationPayload data;
+    private PushNotificationNewPayload data;
 }

@@ -2,6 +2,10 @@ package com.incentives.piggyback.notification;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +35,8 @@ import com.incentives.piggyback.notification.entity.EmailRequest;
 import com.incentives.piggyback.notification.entity.InvoiceRequest;
 import com.incentives.piggyback.notification.publisher.NotificationEventPublisher;
 import com.incentives.piggyback.notification.service.NotificationService;
+
+import javax.crypto.*;
 
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
@@ -94,5 +100,19 @@ public class NotificationTest {
 		MockHttpServletResponse response = result.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
+//
+//	@Test
+//	public void keyGenerator() {
+//		SecretKey secretKey = null;
+//		try {
+//			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+//			keyGen.init(256); // for example
+//			secretKey = keyGen.generateKey();
+//			System.out.println("Secret key generation failed" + secretKey.getEncoded().toString());
+//		}catch(NoSuchAlgorithmException e){
+//			System.out.println("Secret key generation failed");
+//		}
+//	}
+
 
 }

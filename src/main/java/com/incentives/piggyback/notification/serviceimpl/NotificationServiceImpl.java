@@ -1,11 +1,17 @@
 package com.incentives.piggyback.notification.serviceimpl;
 
 import java.io.IOException;
+import java.security.PublicKey;
 import java.util.Calendar;
+import java.util.List;
 
+import com.google.android.gcm.server.InvalidRequestException;
+import com.incentives.piggyback.notification.entity.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,14 +22,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
-import com.incentives.piggyback.notification.entity.BroadcastRequest;
-import com.incentives.piggyback.notification.entity.EmailRequest;
-import com.incentives.piggyback.notification.entity.InvoiceRequest;
-import com.incentives.piggyback.notification.entity.OfferEntity;
 import com.incentives.piggyback.notification.publisher.NotificationEventPublisher;
 import com.incentives.piggyback.notification.service.NotificationService;
 import com.incentives.piggyback.notification.utils.CommonUtility;
 import com.incentives.piggyback.notification.utils.Constant;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -46,6 +49,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Autowired
 	private RestTemplate restTemplate;
+
 
 	@Override
 	public String broadcastNotification(BroadcastRequest broadcastRequest) {
@@ -91,7 +95,6 @@ public class NotificationServiceImpl implements NotificationService {
 		return response.getStatusCodeValue();
 	}
 
-
 	private String setInvoiceBodyContent(InvoiceRequest invoiceRequest) {
 		String htmlContent = environment.getProperty(Constant.Environment.EMAIL_HTML_INVOICE)
 				.replace(Constant.Email.VENDOR, invoiceRequest.getVendorDisplayName())
@@ -106,6 +109,4 @@ public class NotificationServiceImpl implements NotificationService {
 				.replace(Constant.Email.LINK, emailRequest.getRedirectUrl());
 		return htmlContent;
 	}
-
-
 }
