@@ -1,17 +1,12 @@
 package com.incentives.piggyback.notification.serviceimpl;
 
 import java.io.IOException;
-import java.security.PublicKey;
 import java.util.Calendar;
-import java.util.List;
 
-import com.google.android.gcm.server.InvalidRequestException;
 import com.incentives.piggyback.notification.entity.*;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,11 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
-import com.incentives.piggyback.notification.publisher.NotificationEventPublisher;
+import com.incentives.piggyback.notification.publisher.KafkaMessageProducer;
 import com.incentives.piggyback.notification.service.NotificationService;
 import com.incentives.piggyback.notification.utils.CommonUtility;
 import com.incentives.piggyback.notification.utils.Constant;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -42,14 +36,16 @@ public class NotificationServiceImpl implements NotificationService {
 
 	private static final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
-	@Autowired
-	private NotificationEventPublisher.PubsubOutboundGateway messagingGateway;
+	private final KafkaMessageProducer kafkaMessageProducer;
 
 	Gson gson = new Gson();
 
+	public NotificationServiceImpl(KafkaMessageProducer kafkaMessageProducer) {
+		this.kafkaMessageProducer = kafkaMessageProducer;
+	}
+
 	@Autowired
 	private RestTemplate restTemplate;
-
 
 	@Override
 	public String broadcastNotification(BroadcastRequest broadcastRequest) {
@@ -64,14 +60,15 @@ public class NotificationServiceImpl implements NotificationService {
 			notificationAdapter.sendAndroidNotification(broadcastRequest.getPushNotificationRequest().getRecepients(),
 					broadcastRequest.getPushNotificationRequest().getPushNotificationPayload());
 		}
-		messagingGateway.sendToPubsub(
+		kafkaMessageProducer.send(
 				CommonUtility.stringifyEventForPublish(
 						gson.toJson(broadcastRequest),
 						Constant.NOTIFICATION_CREATED_EVENT,
 						Calendar.getInstance().getTime().toString(),
 						"",
 						Constant.NOTIFICATION_SOURCE_ID
-						));
+						)
+		);
 
 		return "Broadcasted Successfully!";
 	}

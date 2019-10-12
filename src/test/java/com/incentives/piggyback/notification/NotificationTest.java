@@ -2,10 +2,6 @@ package com.incentives.piggyback.notification;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,10 +29,7 @@ import com.incentives.piggyback.notification.controller.NotificationController;
 import com.incentives.piggyback.notification.entity.BroadcastRequest;
 import com.incentives.piggyback.notification.entity.EmailRequest;
 import com.incentives.piggyback.notification.entity.InvoiceRequest;
-import com.incentives.piggyback.notification.publisher.NotificationEventPublisher;
 import com.incentives.piggyback.notification.service.NotificationService;
-
-import javax.crypto.*;
 
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
@@ -46,9 +39,6 @@ public class NotificationTest {
 
 	@Mock
 	private NotificationService notificationService;
-
-	@Mock
-	private NotificationEventPublisher.PubsubOutboundGateway messagingGatewayNotificationService;
 
 	@InjectMocks
 	NotificationController notificationController;
@@ -113,6 +103,5 @@ public class NotificationTest {
 //			System.out.println("Secret key generation failed");
 //		}
 //	}
-
 
 }
