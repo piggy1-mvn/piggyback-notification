@@ -69,8 +69,8 @@ public class PushNotificationAdapter {
 			try {
 				pushNotificationNewPayload.setVoucher_code(getAesEncryptData(payload.getVoucher_code(), key));
 				pushNotificationNewPayload.setKey(Base64.getEncoder().encodeToString(encryptAESkey(key.getEncoded().toString(),recepient.getUser_rsa())));
-			} catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | IOException | InvalidKeySpecException e) {
-				throw new PiggyException("Error while encryption of voucher code" + e);
+			} catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException | NoSuchAlgorithmException | IOException | InvalidKeySpecException e) {
+				throw new PiggyException("Error while encryption" + e);
 			}
 			notificationRequestModel.setData(pushNotificationNewPayload);
 
@@ -100,7 +100,7 @@ public class PushNotificationAdapter {
 	private SecretKey keyGenerator() {
 		SecretKey secretKey = null;
 		try {
-			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+			KeyGenerator keyGen = KeyGenerator.getInstance("AES/CBC/PKCS5Padding");
 			keyGen.init(256); // for example
 			secretKey = keyGen.generateKey();
 		}catch(NoSuchAlgorithmException e){
@@ -111,15 +111,14 @@ public class PushNotificationAdapter {
 	}
 
 	private byte[] encryptAESkey(String data, String publicKey) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-		//Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-		Cipher cipher = Cipher.getInstance("RSA");
+		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 		cipher.init(Cipher.ENCRYPT_MODE, getRSAPublicKey(publicKey));
 		byte[] cipherText = cipher.doFinal(data.getBytes());
 		log.info("AES encypted key is " + cipherText.toString());
 		return cipherText;
 	}
 
-	private static String getAesEncryptData(String plainText, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+	private static String getAesEncryptData(String plainText, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 		byte[] plaintext = plainText.getBytes();
 		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		SecretKeySpec keySpec = new SecretKeySpec(secretKey.getEncoded(), "AES");

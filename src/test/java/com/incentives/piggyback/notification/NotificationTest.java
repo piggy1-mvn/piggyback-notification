@@ -3,12 +3,17 @@ package com.incentives.piggyback.notification;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.openssl.PEMParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +42,9 @@ import com.incentives.piggyback.notification.publisher.NotificationEventPublishe
 import com.incentives.piggyback.notification.service.NotificationService;
 
 import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
 
+@Slf4j
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
 public class NotificationTest {
@@ -100,19 +107,5 @@ public class NotificationTest {
 		MockHttpServletResponse response = result.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
-//
-//	@Test
-//	public void keyGenerator() {
-//		SecretKey secretKey = null;
-//		try {
-//			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-//			keyGen.init(256); // for example
-//			secretKey = keyGen.generateKey();
-//			System.out.println("Secret key generation failed" + secretKey.getEncoded().toString());
-//		}catch(NoSuchAlgorithmException e){
-//			System.out.println("Secret key generation failed");
-//		}
-//	}
-
 
 }
