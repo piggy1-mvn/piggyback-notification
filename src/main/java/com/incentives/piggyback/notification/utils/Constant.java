@@ -9,6 +9,8 @@ public interface Constant {
     String NOTIFICATION_CREATED_EVENT = "Notification Events Created";
     String NOTIFICATION_UPDATED_EVENT = "Notification Events Updated";
     String NOTIFICATION_DEACTIVATED_EVENT = "Notification Events Deactivated";
+
+    String KAFKA_BOOTSTRAP_ADDRESS = "kafka.bootstrap.address";
     
     public interface Email {
     	String COUPON_CODE = "{COUPON_CODE}";

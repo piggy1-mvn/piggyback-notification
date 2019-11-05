@@ -9,9 +9,6 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.List;
 
-import com.google.android.gcm.server.InvalidRequestException;
-import com.incentives.piggyback.notification.entity.*;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -19,7 +16,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.openssl.PEMParser;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +23,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
+import com.incentives.piggyback.notification.entity.*;
 import com.incentives.piggyback.notification.exception.ExceptionResponseCode;
 import com.incentives.piggyback.notification.exception.PiggyException;
 import com.incentives.piggyback.notification.utils.CommonUtility;
@@ -142,9 +139,5 @@ public class PushNotificationAdapter {
             }
         }
     }
-
-
-
-
 
 }
