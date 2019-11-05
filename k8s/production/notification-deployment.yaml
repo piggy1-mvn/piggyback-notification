@@ -12,10 +12,6 @@ spec:
         app: piggyback-notification
         env: production
     spec:
-      volumes:
-      - name: google-cloud-key
-        secret:
-          secretName: pubsub-key
       containers:
       - image: gcr.io/omega-palace-254907/piggy1-notification:v9
         name: piggyback-prod-runner-notification
