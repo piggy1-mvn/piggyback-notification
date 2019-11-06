@@ -2,21 +2,10 @@ package com.incentives.piggyback.notification;
 
 import static org.junit.Assert.assertEquals;
 
-<<<<<<< HEAD
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.security.*;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
-=======
->>>>>>> 611a2436d16bd03a396604141f9215d36384ef07
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.openssl.PEMParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,13 +32,7 @@ import com.incentives.piggyback.notification.entity.EmailRequest;
 import com.incentives.piggyback.notification.entity.InvoiceRequest;
 import com.incentives.piggyback.notification.service.NotificationService;
 
-<<<<<<< HEAD
-import javax.crypto.*;
-import javax.crypto.spec.SecretKeySpec;
-
 @Slf4j
-=======
->>>>>>> 611a2436d16bd03a396604141f9215d36384ef07
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
 public class NotificationTest {
@@ -109,21 +92,5 @@ public class NotificationTest {
 		MockHttpServletResponse response = result.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
-<<<<<<< HEAD
-=======
-//
-//	@Test
-//	public void keyGenerator() {
-//		SecretKey secretKey = null;
-//		try {
-//			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-//			keyGen.init(256); // for example
-//			secretKey = keyGen.generateKey();
-//			System.out.println("Secret key generation failed" + secretKey.getEncoded().toString());
-//		}catch(NoSuchAlgorithmException e){
-//			System.out.println("Secret key generation failed");
-//		}
-//	}
->>>>>>> 611a2436d16bd03a396604141f9215d36384ef07
 
 }
