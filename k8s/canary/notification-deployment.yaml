@@ -15,12 +15,12 @@ spec:
       containers:
       - image: gcr.io/omega-palace-254907/piggy1-notification:v9
         name: piggyback-prod-runner-notification
-      env:
-        - name: JASYPT_ENCRYPTOR_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: jasypt-password
-              key: password
+        env:
+          - name: JASYPT_ENCRYPTOR_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: jasypt-password
+                key: password
         resources:
           limits:
             memory: "384Mi"
