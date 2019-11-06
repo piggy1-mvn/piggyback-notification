@@ -103,7 +103,6 @@ public class PushNotificationAdapter {
 		}catch(NoSuchAlgorithmException e){
 			log.debug("Secret key generation failed");
 		}
-		log.info("Secret key generation is" + secretKey.getEncoded().toString());
 		return secretKey;
 	}
 
