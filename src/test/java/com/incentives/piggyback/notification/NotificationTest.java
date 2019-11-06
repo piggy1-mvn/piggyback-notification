@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,9 +30,9 @@ import com.incentives.piggyback.notification.controller.NotificationController;
 import com.incentives.piggyback.notification.entity.BroadcastRequest;
 import com.incentives.piggyback.notification.entity.EmailRequest;
 import com.incentives.piggyback.notification.entity.InvoiceRequest;
-import com.incentives.piggyback.notification.publisher.NotificationEventPublisher;
 import com.incentives.piggyback.notification.service.NotificationService;
 
+@Slf4j
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
 public class NotificationTest {
@@ -40,9 +41,6 @@ public class NotificationTest {
 
 	@Mock
 	private NotificationService notificationService;
-
-	@Mock
-	private NotificationEventPublisher.PubsubOutboundGateway messagingGatewayNotificationService;
 
 	@InjectMocks
 	NotificationController notificationController;

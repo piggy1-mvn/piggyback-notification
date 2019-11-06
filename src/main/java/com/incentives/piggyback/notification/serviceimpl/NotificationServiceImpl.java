@@ -3,6 +3,7 @@ package com.incentives.piggyback.notification.serviceimpl;
 import java.io.IOException;
 import java.util.Calendar;
 
+import com.incentives.piggyback.notification.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
-import com.incentives.piggyback.notification.entity.BroadcastRequest;
-import com.incentives.piggyback.notification.entity.EmailRequest;
-import com.incentives.piggyback.notification.entity.InvoiceRequest;
-import com.incentives.piggyback.notification.entity.OfferEntity;
-import com.incentives.piggyback.notification.publisher.NotificationEventPublisher;
+import com.incentives.piggyback.notification.publisher.KafkaMessageProducer;
 import com.incentives.piggyback.notification.service.NotificationService;
 import com.incentives.piggyback.notification.utils.CommonUtility;
 import com.incentives.piggyback.notification.utils.Constant;
@@ -39,10 +36,13 @@ public class NotificationServiceImpl implements NotificationService {
 
 	private static final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
-	@Autowired
-	private NotificationEventPublisher.PubsubOutboundGateway messagingGateway;
+	private final KafkaMessageProducer kafkaMessageProducer;
 
 	Gson gson = new Gson();
+
+	public NotificationServiceImpl(KafkaMessageProducer kafkaMessageProducer) {
+		this.kafkaMessageProducer = kafkaMessageProducer;
+	}
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -60,14 +60,15 @@ public class NotificationServiceImpl implements NotificationService {
 			notificationAdapter.sendAndroidNotification(broadcastRequest.getPushNotificationRequest().getRecepients(),
 					broadcastRequest.getPushNotificationRequest().getPushNotificationPayload());
 		}
-		messagingGateway.sendToPubsub(
+		kafkaMessageProducer.send(
 				CommonUtility.stringifyEventForPublish(
 						gson.toJson(broadcastRequest),
 						Constant.NOTIFICATION_CREATED_EVENT,
 						Calendar.getInstance().getTime().toString(),
 						"",
 						Constant.NOTIFICATION_SOURCE_ID
-						));
+						)
+		);
 
 		return "Broadcasted Successfully!";
 	}
@@ -91,7 +92,6 @@ public class NotificationServiceImpl implements NotificationService {
 		return response.getStatusCodeValue();
 	}
 
-
 	private String setInvoiceBodyContent(InvoiceRequest invoiceRequest) {
 		String htmlContent = environment.getProperty(Constant.Environment.EMAIL_HTML_INVOICE)
 				.replace(Constant.Email.VENDOR, invoiceRequest.getVendorDisplayName())
@@ -106,6 +106,4 @@ public class NotificationServiceImpl implements NotificationService {
 				.replace(Constant.Email.LINK, emailRequest.getRedirectUrl());
 		return htmlContent;
 	}
-
-
 }
