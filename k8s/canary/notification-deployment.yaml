@@ -13,7 +13,7 @@ spec:
         env: canary
     spec:
       containers:
-      - image: gcr.io/omega-palace-254907/piggy1-notification:v9
+      - image: gcr.io/omega-palace-254907/piggy1-notification:v10
         name: piggyback-prod-runner-notification
         env:
           - name: JASYPT_ENCRYPTOR_PASSWORD
