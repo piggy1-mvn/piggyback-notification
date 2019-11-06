@@ -4,7 +4,7 @@ metadata:
   name: piggyback-notification-canary
   namespace: production
 spec:
-  replicas: 1
+  replicas: 0
   progressDeadlineSeconds: 10
   template:
     metadata:
@@ -12,19 +12,15 @@ spec:
         app: piggyback-notification
         env: canary
     spec:
-      volumes:
-      - name: google-cloud-key
-        secret:
-          secretName: pubsub-key
       containers:
-      - image: gcr.io/absolute-text-251105/piggy1-notification:v9
+      - image: gcr.io/omega-palace-254907/piggy1-notification:v9
         name: piggyback-prod-runner-notification
-        volumeMounts:
-        - name: google-cloud-key
-          mountPath: /var/secrets/google
-        env:
-        - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /var/secrets/google/secret.json
+      env:
+        - name: JASYPT_ENCRYPTOR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: jasypt-password
+              key: password
         resources:
           limits:
             memory: "384Mi"

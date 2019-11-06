@@ -9,9 +9,6 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.List;
 
-import com.google.android.gcm.server.InvalidRequestException;
-import com.incentives.piggyback.notification.entity.*;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -19,7 +16,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.openssl.PEMParser;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +23,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
+import com.incentives.piggyback.notification.entity.*;
 import com.incentives.piggyback.notification.exception.ExceptionResponseCode;
 import com.incentives.piggyback.notification.exception.PiggyException;
 import com.incentives.piggyback.notification.utils.CommonUtility;
@@ -69,8 +66,8 @@ public class PushNotificationAdapter {
 			try {
 				pushNotificationNewPayload.setVoucher_code(getAesEncryptData(payload.getVoucher_code(), key));
 				pushNotificationNewPayload.setKey(Base64.getEncoder().encodeToString(encryptAESkey(key.getEncoded().toString(),recepient.getUser_rsa())));
-			} catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | IOException | InvalidKeySpecException e) {
-				throw new PiggyException("Error while encryption of voucher code" + e);
+			} catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException | NoSuchAlgorithmException | IOException | InvalidKeySpecException e) {
+				throw new PiggyException("Error while encryption" + e);
 			}
 			notificationRequestModel.setData(pushNotificationNewPayload);
 
@@ -100,7 +97,7 @@ public class PushNotificationAdapter {
 	private SecretKey keyGenerator() {
 		SecretKey secretKey = null;
 		try {
-			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+			KeyGenerator keyGen = KeyGenerator.getInstance("AES/CBC/PKCS5Padding");
 			keyGen.init(256); // for example
 			secretKey = keyGen.generateKey();
 		}catch(NoSuchAlgorithmException e){
@@ -111,15 +108,14 @@ public class PushNotificationAdapter {
 	}
 
 	private byte[] encryptAESkey(String data, String publicKey) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-		//Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-		Cipher cipher = Cipher.getInstance("RSA");
+		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 		cipher.init(Cipher.ENCRYPT_MODE, getRSAPublicKey(publicKey));
 		byte[] cipherText = cipher.doFinal(data.getBytes());
 		log.info("AES encypted key is " + cipherText.toString());
 		return cipherText;
 	}
 
-	private static String getAesEncryptData(String plainText, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+	private static String getAesEncryptData(String plainText, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 		byte[] plaintext = plainText.getBytes();
 		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		SecretKeySpec keySpec = new SecretKeySpec(secretKey.getEncoded(), "AES");
@@ -143,9 +139,5 @@ public class PushNotificationAdapter {
             }
         }
     }
-
-
-
-
 
 }
