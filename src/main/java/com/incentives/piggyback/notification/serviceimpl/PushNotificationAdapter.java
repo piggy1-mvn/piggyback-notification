@@ -97,7 +97,7 @@ public class PushNotificationAdapter {
 	private SecretKey keyGenerator() {
 		SecretKey secretKey = null;
 		try {
-			KeyGenerator keyGen = KeyGenerator.getInstance("AES/CBC/PKCS5Padding");
+			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 			keyGen.init(256); // for example
 			secretKey = keyGen.generateKey();
 		}catch(NoSuchAlgorithmException e){
