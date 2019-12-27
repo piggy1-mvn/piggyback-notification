@@ -11,7 +11,7 @@ spec:
         app: piggyback-notification
     spec:
       containers:
-      - image: gcr.io/clear-variety-253514/piggy1-notification:v10
+      - image: gcr.io/omega-palace-254907/piggy1-notification:v10
         name: piggyback-canary-runner-notification
         resources:
           limits:
